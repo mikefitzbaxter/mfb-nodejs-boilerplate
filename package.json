@@ -22,7 +22,7 @@
     "delay": "500"
   },
   "scripts": {
-    "clean": "rimraf ./dist && mkdirp 'dist' 'dist/css' 'dist/js' 'dist/img' 'dist/font'",
+    "clean": "rimraf ./dist && mkdirp \"dist\" \"dist/css\" \"dist/js\" \"dist/img\" \"dist/font\"",
     "js:other": "copyfiles -e \"src/js/**/_*.js\" -u 1 \"src/js/**/*.js\" dist",
     "js:main": "browserify src/js/main.js | uglifyjs > dist/js/main.js",
     "js:app": "browserify src/js/app.js | uglifyjs > dist/js/app.js",

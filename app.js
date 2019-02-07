@@ -67,7 +67,7 @@ if (process.env.AUTH0_CLIENT) {
 
 /* ###### ROUTING ###### */
 const 
-	apiRoute = require('./routes/api'), // handle calls to /api
+	apiRoute = require('./routes/api/index'), // handle calls to /api
 	userRoute = require('./routes/users'), // handle calls to /user
 	indexRoute = require('./routes/index')	// handle all other routes
 
@@ -77,14 +77,14 @@ app.use('/user', userRoute) // assign routes for /user
 app.use('/', indexRoute) // the default index page
 
 // Catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use('*', function (req, res, next) {
 	let err = new Error('Not Found')
 	err.status = 404
 	next(err)
 })
 
 /* ###### ERROR HANDLERS ###### */
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
 	// Set locals, only providing error in development
 	res.locals.message = err.message
 	res.locals.error = req.app.get('env') === 'development' ? err : {}
