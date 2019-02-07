@@ -1,17 +1,21 @@
+'use strict';
 
 /* ###### INCLUDES ###### */
-const dotenv	   = require('dotenv').config()
-const express      = require('express')
-const nunjucks     = require('nunjucks')
-const helmet       = require('helmet')
-const logger       = require('morgan')
-const bodyParser   = require('body-parser')
-const cookieParser = require('cookie-parser')
-const compression  = require('compression')
-const session	   = require('express-session')
+const 
+	dotenv	   	 = require('dotenv').config(),
+	express      = require('express'),
+	nunjucks     = require('nunjucks'),
+	helmet       = require('helmet'),
+	logger       = require('morgan'),
+	bodyParser   = require('body-parser'),
+	cookieParser = require('cookie-parser'),
+	compression  = require('compression'),
+	session	     = require('express-session'),
+	subdomain 	 = require('express-subdomain')
 
-const app 	= express()
-const http  = require('http')
+const 
+	app  = express(),
+	http = require('http')
 
 /** Create HTTP server **/
 const server = http.createServer(app)
@@ -22,14 +26,13 @@ const server = http.createServer(app)
 // configure nunjucks template engine
 // http://mozilla.github.io/nunjucks
 const env = nunjucks.configure('views', {
-	autoescape: true,
-	express: app,
-	watch: true
-})
-env.addGlobal('app', { 
-	title: process.env.APP_TITLE,
-	ga: process.env.GA,
-	env: app.get('env'),
+		autoescape: true,
+		express: app,
+		watch: true
+	}).addGlobal('app', { 
+		title: process.env.APP_TITLE,
+		ga: process.env.GA,
+		env: app.get('env')
 })
 
 /* ###### SESSION CONFIG ###### */
@@ -42,6 +45,8 @@ const sess = {
 
 if (app.get('env') === 'production') {
 	// sess.cookie.secure = true // serve secure cookies, requires https
+	// this needs more work and updating to be implemented correctly
+	// and work on local environments as well
 }
 
 /* ###### MIDDLEWARE ###### */
@@ -61,14 +66,15 @@ if (process.env.AUTH0_CLIENT) {
 }
 
 /* ###### ROUTING ###### */
-const api = require('./routes/api') // handle calls to /api
-const user = require('./routes/users') // handle calls to /user
-const index = require('./routes/index')	// handle all other routes
+const 
+	apiRoute = require('./routes/api'), // handle calls to /api
+	userRoute = require('./routes/users'), // handle calls to /user
+	indexRoute = require('./routes/index')	// handle all other routes
 
 // site url sections
-app.use('/api', api)
-app.use('/user', user) // assign routes for /user
-app.use('/', index)
+app.use(subdomain('api', apiRoute))
+app.use('/user', userRoute) // assign routes for /user
+app.use('/', indexRoute) // the default index page
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {
